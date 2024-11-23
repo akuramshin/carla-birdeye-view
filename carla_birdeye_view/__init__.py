@@ -5,7 +5,7 @@ import cv2.cv2 as cv
 
 from enum import IntEnum, auto, Enum
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 from filelock import FileLock
 
 from carla_birdeye_view import actors, cache
@@ -40,6 +40,7 @@ DEFAULT_CROP_TYPE = BirdViewCropType.FRONT_AND_REAR_AREA
 
 
 class BirdViewMasks(IntEnum):
+    WAYPOINTS = 9
     PEDESTRIANS = 8
     RED_LIGHTS = 7
     YELLOW_LIGHTS = 6
@@ -69,6 +70,7 @@ RGB_BY_MASK = {
     BirdViewMasks.CENTERLINES: RGB.CHOCOLATE,
     BirdViewMasks.LANES: RGB.WHITE,
     BirdViewMasks.ROAD: RGB.DIM_GRAY,
+    BirdViewMasks.WAYPOINTS: RGB.SKY_BLUE,
 }
 
 
@@ -200,6 +202,10 @@ class BirdViewProducer:
         )
         return str(cache_dir / cache_filename)
 
+    def set_waypoints(self, waypoints: List[Tuple[int, int]]) -> None:
+        if waypoints:
+            self.masks_generator._traj_waypoints = waypoints
+
     def produce(self, agent_vehicle: carla.Actor) -> BirdView:
         all_actors = actors.query_all(world=self._world)
         segregated_actors = actors.segregate_by_type(actors=all_actors)
@@ -285,6 +291,7 @@ class BirdViewProducer:
         masks[BirdViewMasks.PEDESTRIANS.value] = self.masks_generator.pedestrians_mask(
             segregated_actors.pedestrians
         )
+        masks[BirdViewMasks.WAYPOINTS.value] = self.masks_generator.waypoints_mask()
         return masks
 
     def apply_agent_following_transformation_to_masks(

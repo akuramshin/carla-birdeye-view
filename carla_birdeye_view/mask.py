@@ -91,6 +91,7 @@ class MapMaskGenerator:
         self._each_road_waypoints = self._generate_road_waypoints()
         self._mask_size: PixelDimensions = self.calculate_mask_size()
         self._render_lanes_on_junctions = render_lanes_on_junctions
+        self._traj_waypoints = []
 
     def _find_map_boundaries(self) -> MapBoundaries:
         """Find extreme locations on a map.
@@ -316,6 +317,18 @@ class MapMaskGenerator:
             ped.get_transform().transform(corners)
             corners = [self.location_to_pixel(loc) for loc in corners]
             cv.fillPoly(img=canvas, pts=np.int32([corners]), color=COLOR_ON)
+        return canvas
+    
+    def waypoints_mask(self) -> Mask:
+        canvas = self.make_empty_mask()
+        corners = [self.location_to_pixel(carla.Location(x=p[0],y=p[1])) for p in self._traj_waypoints]
+        if len(corners) > 2:
+            print("Drawing waypoint line")
+            polygon = np.array([corners], dtype=np.int32)
+            cv.polylines(
+                img=canvas, pts=polygon, isClosed=False, color=COLOR_ON, thickness=3
+            )
+
         return canvas
 
     def traffic_lights_masks(self, traffic_lights: List[carla.Actor]) -> Tuple[Mask]:
