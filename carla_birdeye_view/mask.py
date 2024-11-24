@@ -323,7 +323,6 @@ class MapMaskGenerator:
         canvas = self.make_empty_mask()
         corners = [self.location_to_pixel(carla.Location(x=p[0],y=p[1])) for p in self._traj_waypoints]
         if len(corners) > 2:
-            print("Drawing waypoint line")
             polygon = np.array([corners], dtype=np.int32)
             cv.polylines(
                 img=canvas, pts=polygon, isClosed=False, color=COLOR_ON, thickness=3
