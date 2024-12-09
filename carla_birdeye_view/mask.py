@@ -325,7 +325,7 @@ class MapMaskGenerator:
         if len(corners) > 2:
             polygon = np.array([corners], dtype=np.int32)
             cv.polylines(
-                img=canvas, pts=polygon, isClosed=False, color=COLOR_ON, thickness=3
+                img=canvas, pts=polygon, isClosed=False, color=COLOR_ON, thickness=2
             )
 
         return canvas

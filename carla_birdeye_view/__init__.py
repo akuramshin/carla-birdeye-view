@@ -40,13 +40,13 @@ DEFAULT_CROP_TYPE = BirdViewCropType.FRONT_AND_REAR_AREA
 
 
 class BirdViewMasks(IntEnum):
-    WAYPOINTS = 9
-    PEDESTRIANS = 8
-    RED_LIGHTS = 7
-    YELLOW_LIGHTS = 6
-    GREEN_LIGHTS = 5
-    AGENT = 4
-    VEHICLES = 3
+    PEDESTRIANS = 9
+    RED_LIGHTS = 8
+    YELLOW_LIGHTS = 7
+    GREEN_LIGHTS = 6
+    AGENT = 5
+    VEHICLES = 4
+    WAYPOINTS = 3
     CENTERLINES = 2
     LANES = 1
     ROAD = 0
